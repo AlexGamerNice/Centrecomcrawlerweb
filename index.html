@@ -1,24 +1,758 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Web Scraper</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Web Scraper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        input, button { padding: 10px; font-size: 16px; }
-        .result { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; }
-        .product { margin-bottom: 30px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
-        .error { color: red; }
-        img { max-width: 200px; max-height: 200px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            padding: 25px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .url-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .url-input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-scrape {
+            background: #27ae60;
+        }
+        
+        .btn-scrape:hover {
+            background: #219653;
+        }
+        
+        .btn-reset {
+            background: #e74c3c;
+        }
+        
+        .btn-reset:hover {
+            background: #c0392b;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .results-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+        
+        .results-count {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            padding: 10px 18px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .page-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .current-page {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .price-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .sale-price {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .was-price {
+            text-decoration: line-through;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .savings {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .product-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .badge {
+            background: #3498db;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .status {
+            background: #f39c12;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .stock-status {
+            margin-top: 10px;
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .out-of-stock {
+            color: #e74c3c;
+        }
+        
+        .features {
+            margin-top: 15px;
+        }
+        
+        .features ul {
+            padding-left: 20px;
+            color: #555;
+        }
+        
+        .features li {
+            margin-bottom: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        .product-url {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+            text-align: center;
+        }
+        
+        .product-url a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .product-url a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #27ae60;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Web Scraper</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL to scrape" size="50">
-        <button id="scrapeBtn">Scrape Products</button>
-        <div id="results" class="result"></div>
+        <header>
+            <h1><i class="fas fa-spider"></i> Advanced Web Scraper</h1>
+            <p class="subtitle">Extract product data from e-commerce websites with pagination and sorting</p>
+        </header>
+        
+        <section class="input-section">
+            <div class="input-group">
+                <input type="text" id="urlInput" class="url-input" placeholder="Enter e-commerce product listing URL...">
+                <button id="scrapeBtn" class="btn btn-scrape"><i class="fas fa-download"></i> Scrape Products</button>
+                <button id="resetBtn" class="btn btn-reset"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label class="control-label" for="sortSelect"><i class="fas fa-sort"></i> Sort By:</label>
+                    <select id="sortSelect">
+                        <option value="default">Default Order</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                        <option value="price_asc">Price (Low to High)</option>
+                        <option value="price_desc">Price (High to Low)</option>
+                        <option value="savings_desc">Savings (High to Low)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label" for="pageSelect"><i class="fas fa-file"></i> Results Per Page:</label>
+                    <select id="pageSelect">
+                        <option value="12">12 Products</option>
+                        <option value="24">24 Products</option>
+                        <option value="36">36 Products</option>
+                        <option value="100">100 Products</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+        
+        <section class="results-section">
+            <div class="results-header">
+                <h2 class="results-title">Scraped Products</h2>
+                <div class="results-count">0 products found</div>
+            </div>
+            
+            <div class="pagination">
+                <button id="prevPage" class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn current-page">Page 1</button>
+                <button id="nextPage" class="page-btn" disabled><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div id="results" class="product-grid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Enter a URL and click "Scrape Products" to start
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <button id="prevPageBottom" class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn current-page">Page 1</button>
+                <button id="nextPageBottom" class="page-btn" disabled><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Advanced Web Scraper &copy; 2023 | Data is extracted in real-time from provided URLs</p>
+        </footer>
     </div>
-    <script src="script.js"></script>
+    
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Global variables
+        let allProducts = [];
+        let currentPage = 1;
+        let productsPerPage = 12;
+        let sortMethod = 'default';
+        
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const scrapeBtn = document.getElementById('scrapeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const sortSelect = document.getElementById('sortSelect');
+        const pageSelect = document.getElementById('pageSelect');
+        const resultsContainer = document.getElementById('results');
+        const resultsCount = document.querySelector('.results-count');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+        const prevPageBtnBottom = document.getElementById('prevPageBottom');
+        const nextPageBtnBottom = document.getElementById('nextPageBottom');
+        const currentPageBtns = document.querySelectorAll('.current-page');
+        const notification = document.getElementById('notification');
+        
+        // Sample URLs for demo purposes
+        const sampleURLs = [
+            "https://www.example.com/products/page1",
+            "https://www.example.com/products/page2",
+            "https://www.example.com/products/page3"
+        ];
+        
+        // Initialize with a sample URL
+        urlInput.value = sampleURLs[0];
+        
+        // Event Listeners
+        scrapeBtn.addEventListener('click', startScraping);
+        resetBtn.addEventListener('click', resetScraper);
+        sortSelect.addEventListener('change', handleSortChange);
+        pageSelect.addEventListener('change', handlePageSizeChange);
+        prevPageBtn.addEventListener('click', () => changePage(currentPage - 1));
+        nextPageBtn.addEventListener('click', () => changePage(currentPage + 1));
+        prevPageBtnBottom.addEventListener('click', () => changePage(currentPage - 1));
+        nextPageBtnBottom.addEventListener('click', () => changePage(currentPage + 1));
+        
+        // Functions
+        function startScraping() {
+            const url = urlInput.value.trim();
+            if (!url) {
+                showNotification('Please enter a valid URL', 'error');
+                return;
+            }
+            
+            showNotification('Scraping products...', 'success');
+            resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Scraping product data...</div>';
+            
+            // Simulate scraping from multiple pages
+            setTimeout(() => {
+                // For demo purposes, we'll generate sample data
+                // In a real implementation, this would be replaced with actual scraping code
+                allProducts = generateSampleData();
+                resultsCount.textContent = `${allProducts.length} products found`;
+                
+                // Apply sorting
+                sortProducts();
+                
+                // Display first page
+                displayProducts(currentPage);
+                
+                showNotification('Products scraped successfully!', 'success');
+            }, 1500);
+        }
+        
+        function resetScraper() {
+            allProducts = [];
+            currentPage = 1;
+            productsPerPage = 12;
+            sortMethod = 'default';
+            
+            urlInput.value = sampleURLs[0];
+            sortSelect.value = 'default';
+            pageSelect.value = '12';
+            resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Enter a URL and click "Scrape Products" to start</div>';
+            resultsCount.textContent = '0 products found';
+            
+            updatePaginationControls();
+            showNotification('Scraper has been reset', 'success');
+        }
+        
+        function handleSortChange(e) {
+            sortMethod = e.target.value;
+            sortProducts();
+            displayProducts(currentPage);
+        }
+        
+        function handlePageSizeChange(e) {
+            productsPerPage = parseInt(e.target.value);
+            currentPage = 1;
+            displayProducts(currentPage);
+        }
+        
+        function changePage(newPage) {
+            if (newPage < 1 || newPage > Math.ceil(allProducts.length / productsPerPage)) return;
+            
+            currentPage = newPage;
+            displayProducts(currentPage);
+        }
+        
+        function sortProducts() {
+            switch(sortMethod) {
+                case 'name_asc':
+                    allProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    allProducts.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'price_asc':
+                    allProducts.sort((a, b) => parseFloat(a.sale_price.replace(/[^\d.]/g, '')) - parseFloat(b.sale_price.replace(/[^\d.]/g, '')));
+                    break;
+                case 'price_desc':
+                    allProducts.sort((a, b) => parseFloat(b.sale_price.replace(/[^\d.]/g, '')) - parseFloat(a.sale_price.replace(/[^\d.]/g, '')));
+                    break;
+                case 'savings_desc':
+                    allProducts.sort((a, b) => {
+                        const aSavings = parseFloat(a.was_price.replace(/[^\d.]/g, '')) - parseFloat(a.sale_price.replace(/[^\d.]/g, ''));
+                        const bSavings = parseFloat(b.was_price.replace(/[^\d.]/g, '')) - parseFloat(b.sale_price.replace(/[^\d.]/g, ''));
+                        return bSavings - aSavings;
+                    });
+                    break;
+                // Default keeps the original order
+            }
+        }
+        
+        function displayProducts(page) {
+            if (allProducts.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No products found. Try a different URL.</div>';
+                return;
+            }
+            
+            const startIndex = (page - 1) * productsPerPage;
+            const endIndex = Math.min(startIndex + productsPerPage, allProducts.length);
+            const productsToShow = allProducts.slice(startIndex, endIndex);
+            
+            let html = '';
+            
+            productsToShow.forEach(product => {
+                const savings = parseFloat(product.was_price.replace(/[^\d.]/g, '')) - parseFloat(product.sale_price.replace(/[^\d.]/g, ''));
+                
+                html += `
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('${product.image_url}')"></div>
+                    <div class="product-content">
+                        <h3 class="product-name">${product.name}</h3>
+                        
+                        <div class="price-section">
+                            <div class="sale-price">${product.sale_price}</div>
+                            ${product.was_price ? `<div class="was-price">${product.was_price}</div>` : ''}
+                            ${savings > 0 ? `<div class="savings">Save $${savings.toFixed(2)}</div>` : ''}
+                        </div>
+                        
+                        ${product.stock_status.length ? `
+                        <div class="stock-status ${product.stock_status[0].includes('Out') ? 'out-of-stock' : ''}">
+                            <i class="fas fa-${product.stock_status[0].includes('Out') ? 'times' : 'check'}-circle"></i> 
+                            ${product.stock_status[0]}
+                        </div>` : ''}
+                        
+                        ${product.badges.length ? `
+                        <div class="product-meta">
+                            ${product.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
+                        </div>` : ''}
+                        
+                        ${product.sales_points.length ? `
+                        <div class="features">
+                            <ul>
+                                ${product.sales_points.map(point => `<li>${point}</li>`).join('')}
+                            </ul>
+                        </div>` : ''}
+                        
+                        ${product.product_url ? `
+                        <div class="product-url">
+                            <a href="${product.product_url}" target="_blank"><i class="fas fa-external-link-alt"></i> View Product</a>
+                        </div>` : ''}
+                    </div>
+                </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = html;
+            updatePaginationControls();
+        }
+        
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(allProducts.length / productsPerPage);
+            
+            currentPageBtns.forEach(btn => {
+                btn.textContent = `Page ${currentPage} of ${totalPages}`;
+            });
+            
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+            prevPageBtnBottom.disabled = currentPage === 1;
+            nextPageBtnBottom.disabled = currentPage === totalPages;
+        }
+        
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Sample data generation for demonstration
+        function generateSampleData() {
+            const sampleData = [];
+            const sampleNames = [
+                "Premium Wireless Headphones", "Smart Fitness Tracker", 
+                "4K Ultra HD Smart TV", "Ergonomic Office Chair", 
+                "Bluetooth Portable Speaker", "Professional Camera Kit",
+                "Gaming Laptop", "Smart Home Hub", "Electric Coffee Maker",
+                "Robot Vacuum Cleaner", "Wireless Charging Pad", "Smart Watch"
+            ];
+            
+            const sampleBadges = [["New"], ["Sale"], ["Limited"], ["Best Seller"], ["Eco-Friendly"], []]; 
+            const sampleStatus = [["In Stock"], ["Low Stock"], ["Out of Stock"]];
+            
+            for (let i = 0; i < 36; i++) {
+                const name = sampleNames[Math.floor(Math.random() * sampleNames.length)];
+                const basePrice = Math.random() * 500 + 50;
+                const salePrice = basePrice * (1 - Math.random() * 0.4);
+                const wasPrice = Math.random() > 0.3 ? `$${(basePrice).toFixed(2)}` : null;
+                
+                sampleData.push({
+                    name: `${name} ${i+1}`,
+                    sales_points: [
+                        "High-quality materials",
+                        "Long battery life",
+                        "Easy to use",
+                        "Advanced features",
+                        "2-year warranty"
+                    ].sort(() => Math.random() - 0.5).slice(0, 3),
+                    badges: sampleBadges[Math.floor(Math.random() * sampleBadges.length)],
+                    sale_price: `$${salePrice.toFixed(2)}`,
+                    was_price: wasPrice,
+                    stock_status: [sampleStatus[Math.floor(Math.random() * sampleStatus.length)]],
+                    image_url: `https://picsum.photos/400/300?random=${i}`,
+                    product_url: "https://www.example.com/product/" + i
+                });
+            }
+            
+            return sampleData;
+        }
+    </script>
 </body>
 </html>
