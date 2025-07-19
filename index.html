@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Scraper</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        input, button { padding: 10px; font-size: 16px; }
+        .result { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; }
+        .product { margin-bottom: 30px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        .error { color: red; }
+        img { max-width: 200px; max-height: 200px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Scraper</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL to scrape" size="50">
+        <button id="scrapeBtn">Scrape Products</button>
+        <div id="results" class="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
