@@ -3,76 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laptop Product Scraper</title>
+    <title>CentreCom Laptop Scraper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --warning: #f8961e;
-            --info: #2ec4b6;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-        }
-        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
-            padding: 20px;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
             min-height: 100vh;
+            padding: 20px;
         }
         
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
         }
         
         header {
-            background: linear-gradient(120deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 30px 40px;
             text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        h1 i {
-            font-size: 2.2rem;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
         }
         
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
             max-width: 700px;
             margin: 0 auto;
+            color: #e0e0e0;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #00c6ff;
         }
         
         .input-section {
-            padding: 30px;
-            background: var(--light);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.25);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .url-input-container {
@@ -84,25 +85,27 @@
         
         #url-input {
             flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #dbe1e8;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 16px 20px;
+            border: 2px solid rgba(0, 198, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
             transition: all 0.3s;
         }
         
         #url-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
+            border-color: #00c6ff;
+            box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2);
         }
         
         #scrape-button {
-            background: var(--primary);
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
             color: white;
             border: none;
-            padding: 0 35px;
-            border-radius: 8px;
+            padding: 0 40px;
+            border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -110,124 +113,138 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
         }
         
         #scrape-button:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
         }
         
         #scrape-button:disabled {
-            background: var(--gray);
+            background: linear-gradient(135deg, #666, #444);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
         
         .stats-section {
-            padding: 20px 30px;
-            background: white;
-            border-bottom: 1px solid var(--light-gray);
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
-            justify-content: center;
+            margin-bottom: 30px;
         }
         
         .stat-card {
-            background: var(--light);
-            padding: 15px 25px;
-            border-radius: 10px;
-            min-width: 200px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 25px 20px;
+            border-radius: 15px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-value {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary);
-            line-height: 1.2;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
         .stat-label {
-            font-size: 0.95rem;
-            color: var(--gray);
+            font-size: 1.1rem;
+            color: #e0e0e0;
         }
         
         .money-saved {
-            color: var(--danger);
+            color: #4ade80;
         }
         
         .controls {
-            padding: 20px 30px;
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             justify-content: center;
-            background: rgba(67, 97, 238, 0.05);
-            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 30px;
         }
         
         .sort-btn {
-            padding: 12px 20px;
-            background: white;
-            border: 2px solid var(--light-gray);
-            border-radius: 8px;
+            padding: 14px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 198, 255, 0.3);
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            color: white;
+            font-size: 1rem;
         }
         
         .sort-btn:hover {
-            border-color: var(--primary);
-            background: rgba(67, 97, 238, 0.05);
+            background: rgba(0, 198, 255, 0.2);
+            border-color: #00c6ff;
         }
         
         .sort-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            border-color: transparent;
         }
         
         .progress-container {
-            padding: 15px 30px;
-            background: white;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: none;
         }
         
         .progress-bar {
-            height: 10px;
-            background: var(--light-gray);
-            border-radius: 5px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .progress-fill {
             height: 100%;
-            background: var(--success);
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease;
         }
         
         .status-text {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
-            color: var(--gray);
+            font-size: 1rem;
+            color: #e0e0e0;
         }
         
         .results-section {
-            padding: 30px;
+            margin-bottom: 50px;
         }
         
         .table-container {
             overflow-x: auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         table {
@@ -243,180 +260,190 @@
         }
         
         th {
-            background: var(--primary);
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
             color: white;
-            padding: 16px 20px;
+            padding: 18px 25px;
             text-align: left;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1.1rem;
         }
         
         th:hover {
-            background: var(--secondary);
-        }
-        
-        th i {
-            margin-left: 5px;
-            font-size: 0.8rem;
+            background: linear-gradient(135deg, #00a3d9, #005bbf);
         }
         
         tbody tr {
-            background: white;
-            transition: background 0.2s;
+            background: rgba(255, 255, 255, 0.05);
+            transition: background 0.3s;
         }
         
         tbody tr:nth-child(even) {
-            background: var(--light);
+            background: rgba(255, 255, 255, 0.08);
         }
         
         tbody tr:hover {
-            background: #e8f4ff;
+            background: rgba(0, 198, 255, 0.15);
         }
         
         td {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--light-gray);
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            vertical-align: top;
         }
         
         .product-image {
-            width: 90px;
-            height: 90px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
-            border-radius: 8px;
-            background: var(--light);
-            padding: 5px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .product-name {
             font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 5px;
-            font-size: 1.1rem;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
         }
         
         .product-link {
-            color: var(--primary);
+            color: #00c6ff;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
             display: inline-block;
-            margin-top: 8px;
+            margin-top: 10px;
+            transition: all 0.3s;
         }
         
         .product-link:hover {
             text-decoration: underline;
+            color: #00a3d9;
         }
         
         .features-list {
             list-style: none;
+            padding-left: 0;
         }
         
         .features-list li {
-            padding: 5px 0;
+            padding: 8px 0;
             position: relative;
-            padding-left: 20px;
+            padding-left: 25px;
+            font-size: 1rem;
         }
         
         .features-list li:before {
-            content: "✓";
-            color: var(--success);
+            content: "•";
+            color: #00c6ff;
             position: absolute;
-            left: 0;
+            left: 10px;
             font-weight: bold;
+            font-size: 1.2rem;
         }
         
         .badge {
             display: inline-block;
-            background: var(--warning);
+            background: linear-gradient(135deg, #ff9800, #ff6d00);
             color: white;
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            margin: 3px;
+            font-size: 0.9rem;
+            margin: 5px;
             font-weight: 500;
         }
         
         .sale-price {
-            color: var(--danger);
+            color: #4ade80;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
         }
         
         .was-price {
             text-decoration: line-through;
-            color: var(--gray);
-            font-size: 0.95rem;
+            color: #a0a0a0;
+            font-size: 1.1rem;
             display: block;
+            margin-top: 5px;
         }
         
         .money-saved {
-            color: var(--success);
+            color: #4ade80;
             font-weight: 600;
             display: block;
-            margin-top: 5px;
-            font-size: 0.95rem;
+            margin-top: 10px;
+            font-size: 1.1rem;
         }
         
         .stock-status {
             display: inline-block;
-            padding: 5px 10px;
+            padding: 8px 15px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 500;
-            margin: 3px 0;
+            margin: 5px 0;
         }
         
         .in-stock {
-            background: rgba(40, 167, 69, 0.15);
+            background: rgba(40, 167, 69, 0.2);
             color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.4);
         }
         
         .low-stock {
-            background: rgba(255, 193, 7, 0.15);
+            background: rgba(255, 193, 7, 0.2);
             color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.4);
         }
         
         .out-of-stock {
-            background: rgba(220, 53, 69, 0.15);
+            background: rgba(220, 53, 69, 0.2);
             color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.4);
         }
         
         footer {
             text-align: center;
             padding: 30px;
-            color: var(--gray);
-            font-size: 0.9rem;
-            background: var(--light);
-            border-top: 1px solid var(--light-gray);
+            color: #a0a0a0;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--gray);
+            color: #a0a0a0;
         }
         
         .empty-state i {
-            font-size: 4rem;
-            color: var(--light-gray);
-            margin-bottom: 20px;
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
         }
         
         .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--dark);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
         }
         
         .error-message {
-            background: rgba(220, 53, 69, 0.1);
+            background: rgba(220, 53, 69, 0.2);
             color: #dc3545;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 10px;
             margin: 20px auto;
             max-width: 800px;
             text-align: center;
             display: none;
+            border: 1px solid rgba(220, 53, 69, 0.4);
         }
         
         @media (max-width: 768px) {
@@ -426,35 +453,37 @@
             
             #scrape-button {
                 justify-content: center;
-                padding: 15px;
-            }
-            
-            .stat-card {
-                min-width: 150px;
-                padding: 12px 15px;
-            }
-            
-            .stat-value {
-                font-size: 1.8rem;
+                padding: 16px;
             }
             
             h1 {
+                font-size: 2.2rem;
+            }
+            
+            .stat-card {
+                padding: 20px 15px;
+            }
+            
+            .stat-value {
                 font-size: 2rem;
             }
         }
     </style>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-laptop"></i> Laptop Product Scraper</h1>
-            <p class="subtitle">Enter a product listing URL below to scrape and analyze laptop products with pagination support</p>
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <h1>CentreCom Laptop Scraper</h1>
+                <i class="fas fa-laptop-code"></i>
+            </div>
+            <p class="subtitle">Scrape and analyze laptop products from CentreCom with pagination support</p>
         </header>
         
         <div class="input-section">
             <div class="url-input-container">
-                <input type="text" id="url-input" placeholder="Enter product listing URL (e.g., https://example.com/laptops)">
+                <input type="text" id="url-input" placeholder="Enter CentreCom laptop URL (e.g., https://www.centrecom.com.au/laptops)">
                 <button id="scrape-button">
                     <i class="fas fa-bolt"></i> Scrape Products
                 </button>
@@ -484,7 +513,7 @@
         
         <div class="progress-container" id="progress-container">
             <div class="status-text">
-                <span id="progress-status">Initializing...</span>
+                <span id="progress-status">Initializing scraping process...</span>
                 <span id="page-status">Page 0 of 0</span>
             </div>
             <div class="progress-bar">
@@ -516,21 +545,21 @@
                     <thead>
                         <tr>
                             <th data-sort="image">Image</th>
-                            <th data-sort="name">Product Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="name">Product Name</th>
                             <th data-sort="sales_points">Features</th>
                             <th data-sort="badges">Badges</th>
-                            <th data-sort="sale_price_num">Price <i class="fas fa-sort"></i></th>
-                            <th data-sort="money_saved">Savings <i class="fas fa-sort"></i></th>
-                            <th data-sort="stock_status">Stock Status <i class="fas fa-sort"></i></th>
+                            <th data-sort="sale_price_num">Price</th>
+                            <th data-sort="money_saved">Savings</th>
+                            <th data-sort="stock_status">Stock Status</th>
                         </tr>
                     </thead>
                     <tbody id="products-body">
                         <tr>
                             <td colspan="7">
                                 <div class="empty-state">
-                                    <i class="fas fa-laptop-code"></i>
+                                    <i class="fas fa-laptop"></i>
                                     <h3>No Products Scraped Yet</h3>
-                                    <p>Enter a product listing URL and click "Scrape Products" to begin</p>
+                                    <p>Enter a CentreCom laptop URL and click "Scrape Products" to begin</p>
                                 </div>
                             </td>
                         </tr>
@@ -540,8 +569,8 @@
         </div>
         
         <footer>
-            <p>Laptop Product Scraper | All data is extracted directly from the provided URL</p>
-            <p>Note: This tool runs entirely in your browser - no data is sent to any server</p>
+            <p>CentreCom Laptop Scraper | This tool extracts laptop data directly from CentreCom product listings</p>
+            <p>Note: Actual scraping requires a CORS proxy due to browser security restrictions</p>
         </footer>
     </div>
 
@@ -561,15 +590,15 @@
         const controls = document.getElementById('controls');
         const errorMessage = document.getElementById('error-message');
         
-        // Sample URL for user convenience
-        urlInput.value = 'https://example.com/laptops';
+        // Pre-fill with CentreCom URL
+        urlInput.value = 'https://www.centrecom.com.au/laptops';
         
         // Global variables
         let allProducts = [];
         let currentSort = 'name';
         let sortDirection = 1;
         let seenProducts = new Set();
-        let maxPages = 20; // Safety limit for pagination
+        let maxPages = 10; // Safety limit for pagination
         
         // Event listeners
         scrapeButton.addEventListener('click', startScraping);
@@ -587,16 +616,14 @@
             }
         }
         
-        // Function to extract product data from HTML
+        // Function to extract product data from HTML (CentreCom specific)
         function extractProductData(htmlContent) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             const products = [];
             
-            const productGrid = doc.querySelector('.product-grid');
-            if (!productGrid) return products;
-            
-            const productElements = productGrid.querySelectorAll('.prbox_box');
+            // CentreCom product container
+            const productElements = doc.querySelectorAll('.product-item');
             
             productElements.forEach(product => {
                 const productData = {
@@ -614,56 +641,43 @@
                 };
                 
                 // Extract product name
-                const nameDiv = product.querySelector('.prbox_name');
-                if (nameDiv) {
-                    productData.name = nameDiv.textContent.trim();
+                const nameLink = product.querySelector('.product-name a');
+                if (nameLink) {
+                    productData.name = nameLink.textContent.trim();
                 }
                 
-                // Extract sales points
-                const salesPointsDiv = product.querySelector('.prbox_salespoints');
-                if (salesPointsDiv) {
-                    const salesPointsUl = salesPointsDiv.querySelector('ul');
-                    if (salesPointsUl) {
-                        const salesPoints = salesPointsUl.querySelectorAll('li');
-                        salesPoints.forEach(li => {
-                            productData.sales_points.push(li.textContent.trim());
-                        });
-                    }
+                // Extract sales points (not available on CentreCom, but we can use description)
+                const desc = product.querySelector('.short-description');
+                if (desc) {
+                    const points = desc.textContent.trim().split('•').filter(p => p.trim());
+                    productData.sales_points = points.map(p => p.trim());
                 }
                 
-                // Extract badges
-                const badgesDiv = product.querySelector('.prbox_badges');
-                if (badgesDiv) {
-                    const badgesUl = badgesDiv.querySelector('ul');
-                    if (badgesUl) {
-                        const badges = badgesUl.querySelectorAll('li');
-                        badges.forEach(li => {
-                            productData.badges.push(li.textContent.trim());
-                        });
-                    }
-                }
+                // Extract badges (tags)
+                const tags = product.querySelectorAll('.product-tags span');
+                tags.forEach(tag => {
+                    productData.badges.push(tag.textContent.trim());
+                });
                 
                 // Extract prices
-                const pricebox = product.querySelector('.prbox_pricebox');
-                if (pricebox) {
-                    const salePrice = pricebox.querySelector('.saleprice');
-                    if (salePrice) {
-                        const priceText = salePrice.textContent.trim();
-                        productData.sale_price = priceText;
-                        const cleanPrice = priceText.replace(/[^\d.]/g, '');
-                        if (cleanPrice) {
-                            productData.sale_price_num = parseFloat(cleanPrice);
-                        }
+                const salePrice = product.querySelector('.special-price .price');
+                const wasPrice = product.querySelector('.old-price .price');
+                
+                if (salePrice) {
+                    const priceText = salePrice.textContent.trim();
+                    productData.sale_price = priceText;
+                    const cleanPrice = priceText.replace(/[^\d.]/g, '');
+                    if (cleanPrice) {
+                        productData.sale_price_num = parseFloat(cleanPrice);
                     }
-                    
-                    const wasPrice = pricebox.querySelector('.wasprice');
-                    if (wasPrice) {
-                        const priceText = wasPrice.textContent.trim();
-                        productData.was_price = priceText;
-                        const cleanPrice = priceText.replace(/[^\d.]/g, '');
-                        if (cleanPrice) {
-                            productData.was_price_num = parseFloat(cleanPrice);
-                        }
+                }
+                
+                if (wasPrice) {
+                    const priceText = wasPrice.textContent.trim();
+                    productData.was_price = priceText;
+                    const cleanPrice = priceText.replace(/[^\d.]/g, '');
+                    if (cleanPrice) {
+                        productData.was_price_num = parseFloat(cleanPrice);
                     }
                 }
                 
@@ -675,26 +689,20 @@
                 }
                 
                 // Extract stock status
-                const stockIcons = product.querySelectorAll('.prbox_icon');
-                stockIcons.forEach(icon => {
-                    const tooltip = icon.querySelector('.tooltip');
-                    if (tooltip) {
-                        productData.stock_status.push(tooltip.textContent.trim());
-                    }
-                });
+                const stock = product.querySelector('.stock span');
+                if (stock) {
+                    productData.stock_status.push(stock.textContent.trim());
+                }
                 
                 // Extract image URL
-                if (product.dataset.lazy) {
-                    const match = product.dataset.lazy.match(/url\((.*?)\)/);
-                    if (match && match[1]) {
-                        productData.image_url = match[1];
-                    }
+                const img = product.querySelector('.product-image-photo');
+                if (img) {
+                    productData.image_url = img.src;
                 }
                 
                 // Extract product URL
-                const link = product.querySelector('.prbox_link');
-                if (link && link.href) {
-                    productData.product_url = link.href;
+                if (nameLink) {
+                    productData.product_url = nameLink.href;
                 }
                 
                 products.push(productData);
@@ -712,7 +720,7 @@
                     <tr>
                         <td colspan="7">
                             <div class="empty-state">
-                                <i class="fas fa-laptop-code"></i>
+                                <i class="fas fa-laptop"></i>
                                 <h3>No Products Found</h3>
                                 <p>Try a different URL or check the website structure</p>
                             </div>
@@ -749,7 +757,7 @@
                 if (product.product_url) {
                     const link = document.createElement('a');
                     link.href = product.product_url;
-                    link.textContent = 'View Product';
+                    link.textContent = 'View on CentreCom';
                     link.className = 'product-link';
                     link.target = '_blank';
                     nameCell.appendChild(link);
@@ -918,7 +926,7 @@
             }, 5000);
         }
         
-        // Function to simulate scraping (since we can't actually scrape in this environment)
+        // Function to simulate scraping (with mock CentreCom data)
         async function startScraping() {
             const url = urlInput.value.trim();
             if (!url) {
@@ -938,9 +946,6 @@
             // Show initial progress
             progressStatus.textContent = 'Starting scraping process...';
             progressFill.style.width = '0%';
-            
-            // For demo purposes, we'll simulate scraping with mock data
-            // In a real implementation, you would fetch the actual URLs
             
             try {
                 const baseUrl = removePagenumberParam(url);
@@ -1024,14 +1029,15 @@
             }
         }
         
-        // Function to generate mock product data for demonstration
+        // Function to generate mock product data for CentreCom
         function generateMockProducts(page) {
             const brands = ['Dell', 'HP', 'Lenovo', 'Apple', 'Asus', 'Acer', 'Microsoft'];
+            const models = ['XPS 13', 'Spectre x360', 'ThinkPad X1', 'MacBook Pro', 'ZenBook', 'Swift 3', 'Surface Laptop'];
             const processors = ['Intel Core i5', 'Intel Core i7', 'AMD Ryzen 5', 'AMD Ryzen 7', 'Apple M1', 'Apple M2'];
             const rams = ['8GB', '16GB', '32GB'];
             const storages = ['256GB SSD', '512GB SSD', '1TB SSD', '2TB SSD'];
-            const gpus = ['Integrated', 'NVIDIA MX450', 'NVIDIA RTX 3050', 'NVIDIA RTX 4060', 'AMD Radeon'];
-            const badges = ['Best Seller', 'Limited Deal', 'New Arrival', 'Staff Pick', 'Clearance'];
+            const gpus = ['Intel Iris Xe', 'NVIDIA MX450', 'NVIDIA RTX 3050', 'NVIDIA RTX 4060', 'AMD Radeon'];
+            const badges = ['Special', 'Clearance', 'New', 'Staff Pick', 'Best Value'];
             const statuses = ['In Stock', 'Low Stock', 'Out of Stock', 'Pre-order'];
             
             const products = [];
@@ -1039,32 +1045,34 @@
             
             for (let i = 1; i <= count; i++) {
                 const brand = brands[Math.floor(Math.random() * brands.length)];
+                const model = models[Math.floor(Math.random() * models.length)];
                 const processor = processors[Math.floor(Math.random() * processors.length)];
                 const ram = rams[Math.floor(Math.random() * rams.length)];
                 const storage = storages[Math.floor(Math.random() * storages.length)];
                 const gpu = gpus[Math.floor(Math.random() * gpus.length)];
                 
-                const wasPrice = 500 + Math.random() * 1500;
-                const discount = Math.random() * 0.4; // Up to 40% discount
+                const wasPrice = 800 + Math.random() * 2200;
+                const discount = 0.1 + Math.random() * 0.3; // 10-40% discount
                 const salePrice = wasPrice * (1 - discount);
                 const savings = wasPrice - salePrice;
                 
                 const product = {
-                    'name': `${brand} Laptop ${page}-${i} - ${processor}, ${ram} RAM, ${storage}`,
+                    'name': `${brand} ${model} Laptop - ${processor}, ${ram} RAM, ${storage}`,
                     'sales_points': [
                         `${processor} processor`,
                         `${ram} memory`,
                         `${storage} storage`,
-                        gpu === 'Integrated' ? 'Integrated graphics' : `Dedicated ${gpu} graphics`,
+                        `${gpu} graphics`,
+                        'Full HD display',
                         'Backlit keyboard',
-                        'High-resolution display'
+                        'Windows 11 Home'
                     ],
-                    'badges': badges.slice(0, Math.floor(Math.random() * 3)),
+                    'badges': [badges[Math.floor(Math.random() * badges.length)]],
                     'sale_price': `$${salePrice.toFixed(2)}`,
                     'was_price': `$${wasPrice.toFixed(2)}`,
                     'stock_status': [statuses[Math.floor(Math.random() * statuses.length)]],
                     'image_url': `https://picsum.photos/200/150?random=${page}${i}`,
-                    'product_url': `https://example.com/product/${page}-${i}`,
+                    'product_url': `https://www.centrecom.com.au/product-${page}-${i}`,
                     'sale_price_num': salePrice,
                     'was_price_num': wasPrice,
                     'money_saved': savings
