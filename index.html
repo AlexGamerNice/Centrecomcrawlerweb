@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Web Scraper</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Laptop Product Scraper</title>
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #2ec4b6;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
             padding: 20px;
             min-height: 100vh;
         }
@@ -25,1090 +36,1045 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.97);
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            padding: 30px;
         }
         
         header {
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 40px;
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            position: relative;
         }
         
         h1 {
-            font-size: 2.8rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, #1a2a6c, #b21f1f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            display: inline-block;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
         
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(45deg, #1a2a6c, #b21f1f);
-            border-radius: 2px;
+        h1 i {
+            font-size: 2.2rem;
         }
         
         .subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            max-width: 800px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
             margin: 0 auto;
-            line-height: 1.8;
         }
         
         .input-section {
-            background: #f8f9fa;
             padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 35px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
+            background: var(--light);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         
-        .input-group {
+        .url-input-container {
             display: flex;
             gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto;
         }
         
-        .url-input {
+        #url-input {
             flex: 1;
-            min-width: 300px;
-            padding: 16px 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 17px;
+            padding: 15px 20px;
+            border: 2px solid #dbe1e8;
+            border-radius: 8px;
+            font-size: 1rem;
             transition: all 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        .url-input:focus {
-            border-color: #3498db;
+        #url-input:focus {
             outline: none;
-            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
         }
         
-        .btn {
-            padding: 16px 30px;
-            background: #3498db;
+        #scrape-button {
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 17px;
+            padding: 0 35px;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        #scrape-button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
         }
         
-        .btn:active {
-            transform: translateY(1px);
+        #scrape-button:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
         }
         
-        .btn-scrape {
-            background: linear-gradient(to right, #27ae60, #2ecc71);
+        .stats-section {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
         }
         
-        .btn-scrape:hover {
-            background: linear-gradient(to right, #219653, #27ae60);
+        .stat-card {
+            background: var(--light);
+            padding: 15px 25px;
+            border-radius: 10px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         
-        .btn-reset {
-            background: linear-gradient(to right, #e74c3c, #c0392b);
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
         }
         
-        .btn-reset:hover {
-            background: linear-gradient(to right, #c0392b, #a23526);
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+        
+        .money-saved {
+            color: var(--danger);
         }
         
         .controls {
+            padding: 20px 30px;
             display: flex;
-            gap: 20px;
             flex-wrap: wrap;
-            margin-bottom: 25px;
-        }
-        
-        .control-group {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .control-label {
-            display: block;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 17px;
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
-        
-        select:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
-        }
-        
-        .results-section {
-            margin-top: 35px;
-        }
-        
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .results-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            font-weight: 700;
-        }
-        
-        .results-count {
-            background: #3498db;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .pagination {
-            display: flex;
+            gap: 15px;
             justify-content: center;
-            margin: 30px 0;
-            gap: 15px;
+            background: rgba(67, 97, 238, 0.05);
+            border-bottom: 1px solid var(--light-gray);
         }
         
-        .page-btn {
-            padding: 12px 25px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .page-btn:hover:not(:disabled) {
-            background: #2980b9;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        
-        .page-btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .current-page {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 25px;
-        }
-        
-        .product-card {
+        .sort-btn {
+            padding: 12px 20px;
             background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            transition: transform 0.4s, box-shadow 0.4s;
-            border: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            position: relative;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-        
-        .product-image {
-            height: 250px;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .product-content {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .product-name {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-        
-        .price-section {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin: 12px 0;
-            flex-wrap: wrap;
-        }
-        
-        .sale-price {
-            font-size: 1.7rem;
-            color: #e74c3c;
-            font-weight: 800;
-        }
-        
-        .was-price {
-            text-decoration: line-through;
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-        
-        .savings {
-            background: #27ae60;
-            color: white;
-            padding: 8px 15px;
+            border: 2px solid var(--light-gray);
             border-radius: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        }
-        
-        .product-meta {
-            margin-top: 18px;
-            padding-top: 18px;
-            border-top: 1px dashed #eee;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        
-        .badge {
-            background: #3498db;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
             font-weight: 600;
-        }
-        
-        .status {
-            background: #f39c12;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        
-        .stock-status {
-            margin-top: 15px;
-            color: #27ae60;
-            font-weight: 700;
-            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .out-of-stock {
-            color: #e74c3c;
+        .sort-btn:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
         }
         
-        .features {
-            margin-top: 20px;
+        .sort-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
         
-        .features ul {
-            padding-left: 25px;
-            color: #555;
+        .progress-container {
+            padding: 15px 30px;
+            background: white;
+            display: none;
         }
         
-        .features li {
-            margin-bottom: 8px;
-            line-height: 1.6;
+        .progress-bar {
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
         }
         
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.3rem;
-            color: #7f8c8d;
-            grid-column: 1 / -1;
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
         }
         
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 25px;
+        .status-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .results-section {
+            padding: 30px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
             border-radius: 10px;
-            margin: 25px 0;
-            border-left: 6px solid #e74c3c;
-            grid-column: 1 / -1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         
-        .no-results {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.3rem;
-            color: #7f8c8d;
-            grid-column: 1 / -1;
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
         }
         
-        .product-url {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed #eee;
-            text-align: center;
+        thead {
+            position: sticky;
+            top: 0;
         }
         
-        .product-url a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 700;
-            transition: color 0.3s;
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        th:hover {
+            background: var(--secondary);
+        }
+        
+        th i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+        
+        tbody tr {
+            background: white;
+            transition: background 0.2s;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: var(--light);
+        }
+        
+        tbody tr:hover {
+            background: #e8f4ff;
+        }
+        
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .product-image {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: var(--light);
+            padding: 5px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
             font-size: 1.1rem;
         }
         
-        .product-url a:hover {
-            color: #2980b9;
+        .product-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        
+        .product-link:hover {
             text-decoration: underline;
         }
         
-        .notification {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            padding: 18px 30px;
-            border-radius: 10px;
+        .features-list {
+            list-style: none;
+        }
+        
+        .features-list li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .features-list li:before {
+            content: "✓";
+            color: var(--success);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--warning);
             color: white;
-            font-weight: 700;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.5s ease;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 3px;
+            font-weight: 500;
+        }
+        
+        .sale-price {
+            color: var(--danger);
+            font-weight: bold;
             font-size: 1.1rem;
-            max-width: 400px;
         }
         
-        .notification.show {
-            opacity: 1;
-            transform: translateX(0);
+        .was-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 0.95rem;
+            display: block;
         }
         
-        .notification.success {
-            background: linear-gradient(to right, #27ae60, #2ecc71);
-        }
-        
-        .notification.error {
-            background: linear-gradient(to right, #e74c3c, #c0392b);
-        }
-        
-        .stats-section {
-            margin-top: 40px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            border: 1px solid #e9ecef;
-        }
-        
-        .stats-title {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #3498db;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            font-size: 1.2rem;
-            color: #7f8c8d;
+        .money-saved {
+            color: var(--success);
             font-weight: 600;
+            display: block;
+            margin-top: 5px;
+            font-size: 0.95rem;
         }
         
-        .chart-container {
-            height: 300px;
-            margin-top: 25px;
+        .stock-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 3px 0;
+        }
+        
+        .in-stock {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+        
+        .low-stock {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+        
+        .out-of-stock {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
         }
         
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding-top: 30px;
-            color: #7f8c8d;
-            font-size: 1rem;
-            border-top: 1px solid #eee;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            background: var(--light);
+            border-top: 1px solid var(--light-gray);
         }
         
-        @media (max-width: 992px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2.3rem;
-            }
-            
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: center;
+            display: none;
         }
         
         @media (max-width: 768px) {
-            .input-group, .controls {
+            .url-input-container {
                 flex-direction: column;
             }
             
-            .btn {
-                width: 100%;
+            #scrape-button {
                 justify-content: center;
+                padding: 15px;
             }
             
-            .results-header {
-                flex-direction: column;
-                text-align: center;
+            .stat-card {
+                min-width: 150px;
+                padding: 12px 15px;
             }
             
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-spider"></i> Advanced Web Scraper</h1>
-            <p class="subtitle">Extract product data from e-commerce websites with pagination, sorting, and money savings calculations</p>
+            <h1><i class="fas fa-laptop"></i> Laptop Product Scraper</h1>
+            <p class="subtitle">Enter a product listing URL below to scrape and analyze laptop products with pagination support</p>
         </header>
         
-        <section class="input-section">
-            <div class="input-group">
-                <input type="text" id="urlInput" class="url-input" 
-                       placeholder="Enter e-commerce product listing URL (e.g., https://example.com/products)" 
-                       value="https://webscraper.io/test-sites/e-commerce/static/computers/laptops">
-                <button id="scrapeBtn" class="btn btn-scrape"><i class="fas fa-download"></i> Scrape Products</button>
-                <button id="resetBtn" class="btn btn-reset"><i class="fas fa-redo"></i> Reset</button>
+        <div class="input-section">
+            <div class="url-input-container">
+                <input type="text" id="url-input" placeholder="Enter product listing URL (e.g., https://example.com/laptops)">
+                <button id="scrape-button">
+                    <i class="fas fa-bolt"></i> Scrape Products
+                </button>
             </div>
-            
-            <div class="controls">
-                <div class="control-group">
-                    <label class="control-label" for="sortSelect"><i class="fas fa-sort-amount-down"></i> Sort By:</label>
-                    <select id="sortSelect">
-                        <option value="default">Default Order</option>
-                        <option value="name_asc">Name (A-Z)</option>
-                        <option value="name_desc">Name (Z-A)</option>
-                        <option value="price_asc">Price (Low to High)</option>
-                        <option value="price_desc">Price (High to Low)</option>
-                        <option value="savings_desc">Savings (High to Low)</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label class="control-label" for="pageSelect"><i class="fas fa-file"></i> Results Per Page:</label>
-                    <select id="pageSelect">
-                        <option value="12">12 Products</option>
-                        <option value="24">24 Products</option>
-                        <option value="36">36 Products</option>
-                        <option value="100">100 Products</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label class="control-label" for="maxPages"><i class="fas fa-copy"></i> Max Pages to Scrape:</label>
-                    <select id="maxPages">
-                        <option value="1">1 Page</option>
-                        <option value="2">2 Pages</option>
-                        <option value="3">3 Pages</option>
-                        <option value="5">5 Pages</option>
-                        <option value="10">10 Pages</option>
-                    </select>
-                </div>
-            </div>
-        </section>
+        </div>
         
-        <section class="results-section">
-            <div class="results-header">
-                <h2 class="results-title"><i class="fas fa-box-open"></i> Scraped Products</h2>
-                <div class="results-count">0 products found</div>
-            </div>
-            
-            <div class="pagination">
-                <button id="prevPage" class="page-btn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
-                <div class="current-page">Page 1 of 1</div>
-                <button id="nextPage" class="page-btn" disabled>Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-            
-            <div id="results" class="product-grid">
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Enter a URL and click "Scrape Products" to start
-                </div>
-            </div>
-            
-            <div class="pagination">
-                <button id="prevPageBottom" class="page-btn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
-                <div class="current-page">Page 1 of 1</div>
-                <button id="nextPageBottom" class="page-btn" disabled>Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-        </section>
+        <div class="error-message" id="error-message"></div>
         
-        <section class="stats-section">
-            <h2 class="stats-title"><i class="fas fa-chart-bar"></i> Scraping Statistics</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalProducts">0</div>
-                    <div class="stat-label">Total Products</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalSavings">$0</div>
-                    <div class="stat-label">Total Savings</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="avgSavings">$0</div>
-                    <div class="stat-label">Average Savings</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="scrapedPages">0</div>
-                    <div class="stat-label">Pages Scraped</div>
-                </div>
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="total-products">0</div>
+                <div class="stat-label">Products Found</div>
             </div>
-            <div class="chart-container">
-                <canvas id="priceChart"></canvas>
+            <div class="stat-card">
+                <div class="stat-value" id="unique-products">0</div>
+                <div class="stat-label">Unique Products</div>
             </div>
-        </section>
+            <div class="stat-card">
+                <div class="stat-value" id="pages-processed">0</div>
+                <div class="stat-label">Pages Processed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value money-saved" id="total-savings">$0.00</div>
+                <div class="stat-label">Total Savings</div>
+            </div>
+        </div>
+        
+        <div class="progress-container" id="progress-container">
+            <div class="status-text">
+                <span id="progress-status">Initializing...</span>
+                <span id="page-status">Page 0 of 0</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="controls" id="controls" style="display: none;">
+            <button class="sort-btn" data-sort="name">
+                <i class="fas fa-sort-alpha-down"></i> Sort by Name
+            </button>
+            <button class="sort-btn" data-sort="sale_price_num">
+                <i class="fas fa-sort-amount-down"></i> Price (Low to High)
+            </button>
+            <button class="sort-btn" data-sort="sale_price_num_desc">
+                <i class="fas fa-sort-amount-down-alt"></i> Price (High to Low)
+            </button>
+            <button class="sort-btn" data-sort="money_saved">
+                <i class="fas fa-tag"></i> Savings (High to Low)
+            </button>
+            <button class="sort-btn" data-sort="stock_status">
+                <i class="fas fa-warehouse"></i> Stock Status
+            </button>
+        </div>
+        
+        <div class="results-section">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-sort="image">Image</th>
+                            <th data-sort="name">Product Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="sales_points">Features</th>
+                            <th data-sort="badges">Badges</th>
+                            <th data-sort="sale_price_num">Price <i class="fas fa-sort"></i></th>
+                            <th data-sort="money_saved">Savings <i class="fas fa-sort"></i></th>
+                            <th data-sort="stock_status">Stock Status <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-body">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-laptop-code"></i>
+                                    <h3>No Products Scraped Yet</h3>
+                                    <p>Enter a product listing URL and click "Scrape Products" to begin</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         
         <footer>
-            <p>Advanced Web Scraper &copy; 2023 | Data is extracted in real-time from provided URLs</p>
+            <p>Laptop Product Scraper | All data is extracted directly from the provided URL</p>
+            <p>Note: This tool runs entirely in your browser - no data is sent to any server</p>
         </footer>
     </div>
-    
-    <div id="notification" class="notification"></div>
 
     <script>
+        // DOM elements
+        const urlInput = document.getElementById('url-input');
+        const scrapeButton = document.getElementById('scrape-button');
+        const productsBody = document.getElementById('products-body');
+        const totalProductsEl = document.getElementById('total-products');
+        const uniqueProductsEl = document.getElementById('unique-products');
+        const pagesProcessedEl = document.getElementById('pages-processed');
+        const totalSavingsEl = document.getElementById('total-savings');
+        const progressContainer = document.getElementById('progress-container');
+        const progressStatus = document.getElementById('progress-status');
+        const pageStatus = document.getElementById('page-status');
+        const progressFill = document.getElementById('progress-fill');
+        const controls = document.getElementById('controls');
+        const errorMessage = document.getElementById('error-message');
+        
+        // Sample URL for user convenience
+        urlInput.value = 'https://example.com/laptops';
+        
         // Global variables
         let allProducts = [];
-        let currentPage = 1;
-        let productsPerPage = 12;
-        let sortMethod = 'default';
-        let maxPagesToScrape = 3;
-        let scrapedPages = 0;
-        let priceChart = null;
+        let currentSort = 'name';
+        let sortDirection = 1;
+        let seenProducts = new Set();
+        let maxPages = 20; // Safety limit for pagination
         
-        // DOM Elements
-        const urlInput = document.getElementById('urlInput');
-        const scrapeBtn = document.getElementById('scrapeBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const sortSelect = document.getElementById('sortSelect');
-        const pageSelect = document.getElementById('pageSelect');
-        const maxPagesSelect = document.getElementById('maxPages');
-        const resultsContainer = document.getElementById('results');
-        const resultsCount = document.querySelector('.results-count');
-        const prevPageBtn = document.getElementById('prevPage');
-        const nextPageBtn = document.getElementById('nextPage');
-        const prevPageBtnBottom = document.getElementById('prevPageBottom');
-        const nextPageBtnBottom = document.getElementById('nextPageBottom');
-        const currentPageElements = document.querySelectorAll('.current-page');
-        const notification = document.getElementById('notification');
-        const totalProductsEl = document.getElementById('totalProducts');
-        const totalSavingsEl = document.getElementById('totalSavings');
-        const avgSavingsEl = document.getElementById('avgSavings');
-        const scrapedPagesEl = document.getElementById('scrapedPages');
-        const priceChartCanvas = document.getElementById('priceChart');
+        // Event listeners
+        scrapeButton.addEventListener('click', startScraping);
         
-        // Event Listeners
-        scrapeBtn.addEventListener('click', startScraping);
-        resetBtn.addEventListener('click', resetScraper);
-        sortSelect.addEventListener('change', handleSortChange);
-        pageSelect.addEventListener('change', handlePageSizeChange);
-        maxPagesSelect.addEventListener('change', handleMaxPagesChange);
-        prevPageBtn.addEventListener('click', () => changePage(currentPage - 1));
-        nextPageBtn.addEventListener('click', () => changePage(currentPage + 1));
-        prevPageBtnBottom.addEventListener('click', () => changePage(currentPage - 1));
-        nextPageBtnBottom.addEventListener('click', () => changePage(currentPage + 1));
-        
-        // Initialize
-        function init() {
-            showNotification('Ready to scrape! Enter a URL and click Scrape Products', 'success');
-        }
-        
-        // Functions
-        function startScraping() {
-            const url = urlInput.value.trim();
-            if (!url) {
-                showNotification('Please enter a valid URL', 'error');
-                return;
-            }
-            
-            if (!isValidUrl(url)) {
-                showNotification('Please enter a valid URL starting with http:// or https://', 'error');
-                return;
-            }
-            
-            showNotification('Scraping products...', 'success');
-            resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Scraping product data...</div>';
-            
-            allProducts = [];
-            scrapedPages = 0;
-            currentPage = 1;
-            
-            scrapePage(url, 1);
-        }
-        
-        function isValidUrl(url) {
+        // Function to remove page number parameter from URL
+        function removePagenumberParam(url) {
             try {
-                new URL(url);
-                return true;
+                const urlObj = new URL(url);
+                urlObj.searchParams.delete('pagenumber');
+                return urlObj.toString();
             } catch (e) {
-                return false;
+                console.error('Invalid URL:', e);
+                showError('Please enter a valid URL');
+                return url;
             }
         }
         
-        async function scrapePage(url, pageNum) {
-            if (scrapedPages >= maxPagesToScrape) {
-                displayProducts(currentPage);
-                return;
-            }
+        // Function to extract product data from HTML
+        function extractProductData(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const products = [];
             
-            try {
-                // Use CORS proxy to avoid access issues
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                const response = await fetch(proxyUrl + url, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                        'X-Requested-With': 'XMLHttpRequest'
+            const productGrid = doc.querySelector('.product-grid');
+            if (!productGrid) return products;
+            
+            const productElements = productGrid.querySelectorAll('.prbox_box');
+            
+            productElements.forEach(product => {
+                const productData = {
+                    'name': null,
+                    'sales_points': [],
+                    'badges': [],
+                    'sale_price': null,
+                    'was_price': null,
+                    'stock_status': [],
+                    'image_url': null,
+                    'product_url': null,
+                    'sale_price_num': 0.0,
+                    'was_price_num': 0.0,
+                    'money_saved': 0.0
+                };
+                
+                // Extract product name
+                const nameDiv = product.querySelector('.prbox_name');
+                if (nameDiv) {
+                    productData.name = nameDiv.textContent.trim();
+                }
+                
+                // Extract sales points
+                const salesPointsDiv = product.querySelector('.prbox_salespoints');
+                if (salesPointsDiv) {
+                    const salesPointsUl = salesPointsDiv.querySelector('ul');
+                    if (salesPointsUl) {
+                        const salesPoints = salesPointsUl.querySelectorAll('li');
+                        salesPoints.forEach(li => {
+                            productData.sales_points.push(li.textContent.trim());
+                        });
+                    }
+                }
+                
+                // Extract badges
+                const badgesDiv = product.querySelector('.prbox_badges');
+                if (badgesDiv) {
+                    const badgesUl = badgesDiv.querySelector('ul');
+                    if (badgesUl) {
+                        const badges = badgesUl.querySelectorAll('li');
+                        badges.forEach(li => {
+                            productData.badges.push(li.textContent.trim());
+                        });
+                    }
+                }
+                
+                // Extract prices
+                const pricebox = product.querySelector('.prbox_pricebox');
+                if (pricebox) {
+                    const salePrice = pricebox.querySelector('.saleprice');
+                    if (salePrice) {
+                        const priceText = salePrice.textContent.trim();
+                        productData.sale_price = priceText;
+                        const cleanPrice = priceText.replace(/[^\d.]/g, '');
+                        if (cleanPrice) {
+                            productData.sale_price_num = parseFloat(cleanPrice);
+                        }
+                    }
+                    
+                    const wasPrice = pricebox.querySelector('.wasprice');
+                    if (wasPrice) {
+                        const priceText = wasPrice.textContent.trim();
+                        productData.was_price = priceText;
+                        const cleanPrice = priceText.replace(/[^\d.]/g, '');
+                        if (cleanPrice) {
+                            productData.was_price_num = parseFloat(cleanPrice);
+                        }
+                    }
+                }
+                
+                // Calculate money saved
+                if (productData.was_price_num && productData.sale_price_num) {
+                    if (productData.was_price_num > productData.sale_price_num) {
+                        productData.money_saved = productData.was_price_num - productData.sale_price_num;
+                    }
+                }
+                
+                // Extract stock status
+                const stockIcons = product.querySelectorAll('.prbox_icon');
+                stockIcons.forEach(icon => {
+                    const tooltip = icon.querySelector('.tooltip');
+                    if (tooltip) {
+                        productData.stock_status.push(tooltip.textContent.trim());
                     }
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Parse products from the page
-                const products = parseProducts(doc);
-                allProducts = [...allProducts, ...products];
-                scrapedPages++;
-                
-                // Update stats
-                updateStatistics();
-                
-                // Check if there are more pages
-                const nextPageUrl = findNextPageUrl(doc, url);
-                
-                if (nextPageUrl && scrapedPages < maxPagesToScrape) {
-                    // Scrape next page recursively
-                    scrapePage(nextPageUrl, pageNum + 1);
-                } else {
-                    // All pages scraped or max reached
-                    showNotification(`Successfully scraped ${scrapedPages} pages with ${allProducts.length} products`, 'success');
-                    sortProducts();
-                    displayProducts(currentPage);
-                    createPriceChart();
-                }
-                
-            } catch (error) {
-                console.error('Scraping error:', error);
-                resultsContainer.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
-                showNotification(`Error: ${error.message}`, 'error');
-            }
-        }
-        
-        function parseProducts(doc) {
-            const products = [];
-            
-            // Find all product containers - update with your site's structure
-            const productElements = doc.querySelectorAll('.thumbnail'); // Example selector
-            
-            productElements.forEach(product => {
-                try {
-                    const name = product.querySelector('.title')?.textContent.trim() || 'Untitled Product';
-                    const price = product.querySelector('.price')?.textContent.trim() || '$0.00';
-                    
-                    // Extract product details - update with your site's structure
-                    const productData = {
-                        name: name,
-                        sales_points: [],
-                        badges: [],
-                        sale_price: price,
-                        was_price: null,
-                        stock_status: ['In Stock'],
-                        image_url: product.querySelector('img')?.src || 'https://via.placeholder.com/300',
-                        product_url: product.querySelector('a')?.href || '#',
-                        savings: 0
-                    };
-                    
-                    // Calculate savings if was_price is available
-                    if (productData.was_price) {
-                        const wasPrice = parseFloat(productData.was_price.replace(/[^\d.]/g, ''));
-                        const salePrice = parseFloat(productData.sale_price.replace(/[^\d.]/g, ''));
-                        productData.savings = wasPrice - salePrice;
+                // Extract image URL
+                if (product.dataset.lazy) {
+                    const match = product.dataset.lazy.match(/url\((.*?)\)/);
+                    if (match && match[1]) {
+                        productData.image_url = match[1];
                     }
-                    
-                    products.push(productData);
-                } catch (e) {
-                    console.error('Error parsing product:', e);
                 }
+                
+                // Extract product URL
+                const link = product.querySelector('.prbox_link');
+                if (link && link.href) {
+                    productData.product_url = link.href;
+                }
+                
+                products.push(productData);
             });
             
             return products;
         }
         
-        function findNextPageUrl(doc, baseUrl) {
-            // Find next page link - update with your site's structure
-            const nextLink = doc.querySelector('.pagination .next a') || 
-                            doc.querySelector('.pagination a[rel="next"]') || 
-                            doc.querySelector('.next-page a');
+        // Function to render products in the table
+        function renderProducts() {
+            productsBody.innerHTML = '';
             
-            if (nextLink) {
-                try {
-                    return new URL(nextLink.href, baseUrl).href;
-                } catch (e) {
-                    console.error('Error creating next page URL:', e);
-                }
-            }
-            return null;
-        }
-        
-        function resetScraper() {
-            allProducts = [];
-            currentPage = 1;
-            productsPerPage = 12;
-            sortMethod = 'default';
-            scrapedPages = 0;
-            
-            urlInput.value = 'https://webscraper.io/test-sites/e-commerce/static/computers/laptops';
-            sortSelect.value = 'default';
-            pageSelect.value = '12';
-            maxPagesSelect.value = '3';
-            
-            resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Enter a URL and click "Scrape Products" to start</div>';
-            resultsCount.textContent = '0 products found';
-            
-            updatePaginationControls();
-            updateStatistics();
-            
-            if (priceChart) {
-                priceChart.destroy();
-            }
-            
-            showNotification('Scraper has been reset', 'success');
-        }
-        
-        function handleSortChange(e) {
-            sortMethod = e.target.value;
-            sortProducts();
-            displayProducts(currentPage);
-        }
-        
-        function handlePageSizeChange(e) {
-            productsPerPage = parseInt(e.target.value);
-            currentPage = 1;
-            displayProducts(currentPage);
-        }
-        
-        function handleMaxPagesChange(e) {
-            maxPagesToScrape = parseInt(e.target.value);
-        }
-        
-        function changePage(newPage) {
-            if (newPage < 1 || newPage > Math.ceil(allProducts.length / productsPerPage)) return;
-            
-            currentPage = newPage;
-            displayProducts(currentPage);
-        }
-        
-        function sortProducts() {
-            switch(sortMethod) {
-                case 'name_asc':
-                    allProducts.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-                case 'name_desc':
-                    allProducts.sort((a, b) => b.name.localeCompare(a.name));
-                    break;
-                case 'price_asc':
-                    allProducts.sort((a, b) => {
-                        const aPrice = parseFloat(a.sale_price.replace(/[^\d.]/g, '')) || 0;
-                        const bPrice = parseFloat(b.sale_price.replace(/[^\d.]/g, '')) || 0;
-                        return aPrice - bPrice;
-                    });
-                    break;
-                case 'price_desc':
-                    allProducts.sort((a, b) => {
-                        const aPrice = parseFloat(a.sale_price.replace(/[^\d.]/g, '')) || 0;
-                        const bPrice = parseFloat(b.sale_price.replace(/[^\d.]/g, '')) || 0;
-                        return bPrice - aPrice;
-                    });
-                    break;
-                case 'savings_desc':
-                    allProducts.sort((a, b) => b.savings - a.savings);
-                    break;
-            }
-        }
-        
-        function displayProducts(page) {
             if (allProducts.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> No products found. Try a different URL.</div>';
-                resultsCount.textContent = '0 products found';
-                updatePaginationControls();
+                productsBody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-laptop-code"></i>
+                                <h3>No Products Found</h3>
+                                <p>Try a different URL or check the website structure</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
             
-            const startIndex = (page - 1) * productsPerPage;
-            const endIndex = Math.min(startIndex + productsPerPage, allProducts.length);
-            const productsToShow = allProducts.slice(startIndex, endIndex);
-            
-            let html = '';
-            
-            productsToShow.forEach(product => {
-                const savings = product.savings > 0 ? 
-                    `<div class="savings">Save $${product.savings.toFixed(2)}</div>` : '';
+            allProducts.forEach(product => {
+                const row = document.createElement('tr');
                 
-                html += `
-                <div class="product-card">
-                    <div class="product-image" style="background-image: url('${product.image_url}')"></div>
-                    <div class="product-content">
-                        <h3 class="product-name">${product.name}</h3>
+                // Image
+                const imgCell = document.createElement('td');
+                if (product.image_url) {
+                    const img = document.createElement('img');
+                    img.src = product.image_url;
+                    img.alt = product.name || 'Product image';
+                    img.className = 'product-image';
+                    imgCell.appendChild(img);
+                } else {
+                    imgCell.innerHTML = '<i class="fas fa-image"></i>';
+                }
+                
+                // Name with link
+                const nameCell = document.createElement('td');
+                if (product.name) {
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'product-name';
+                    nameDiv.textContent = product.name;
+                    nameCell.appendChild(nameDiv);
+                }
+                
+                if (product.product_url) {
+                    const link = document.createElement('a');
+                    link.href = product.product_url;
+                    link.textContent = 'View Product';
+                    link.className = 'product-link';
+                    link.target = '_blank';
+                    nameCell.appendChild(link);
+                }
+                
+                // Sales points
+                const salesCell = document.createElement('td');
+                if (product.sales_points.length > 0) {
+                    const ul = document.createElement('ul');
+                    ul.className = 'features-list';
+                    product.sales_points.forEach(point => {
+                        const li = document.createElement('li');
+                        li.textContent = point;
+                        ul.appendChild(li);
+                    });
+                    salesCell.appendChild(ul);
+                } else {
+                    salesCell.textContent = 'No features listed';
+                }
+                
+                // Badges
+                const badgesCell = document.createElement('td');
+                if (product.badges.length > 0) {
+                    product.badges.forEach(badge => {
+                        const span = document.createElement('span');
+                        span.className = 'badge';
+                        span.textContent = badge;
+                        badgesCell.appendChild(span);
+                    });
+                } else {
+                    badgesCell.textContent = 'No badges';
+                }
+                
+                // Prices
+                const priceCell = document.createElement('td');
+                if (product.sale_price) {
+                    const salePrice = document.createElement('div');
+                    salePrice.className = 'sale-price';
+                    salePrice.textContent = product.sale_price;
+                    priceCell.appendChild(salePrice);
+                    
+                    if (product.was_price) {
+                        const wasPrice = document.createElement('div');
+                        wasPrice.className = 'was-price';
+                        wasPrice.textContent = product.was_price;
+                        priceCell.appendChild(wasPrice);
+                    }
+                } else {
+                    priceCell.textContent = 'Price not available';
+                }
+                
+                // Money Saved
+                const moneySavedCell = document.createElement('td');
+                if (product.money_saved > 0) {
+                    const moneySaved = document.createElement('div');
+                    moneySaved.className = 'money-saved';
+                    moneySaved.textContent = `Save $${product.money_saved.toFixed(2)}`;
+                    moneySavedCell.appendChild(moneySaved);
+                } else {
+                    moneySavedCell.textContent = 'No savings';
+                }
+                
+                // Stock status
+                const stockCell = document.createElement('td');
+                if (product.stock_status.length > 0) {
+                    product.stock_status.forEach(status => {
+                        const statusSpan = document.createElement('span');
+                        statusSpan.className = 'stock-status';
+                        statusSpan.textContent = status;
                         
-                        <div class="price-section">
-                            <div class="sale-price">${product.sale_price}</div>
-                            ${product.was_price ? `<div class="was-price">${product.was_price}</div>` : ''}
-                            ${savings}
-                        </div>
+                        // Apply different styles based on status text
+                        if (status.toLowerCase().includes('in stock')) {
+                            statusSpan.classList.add('in-stock');
+                        } else if (status.toLowerCase().includes('low stock')) {
+                            statusSpan.classList.add('low-stock');
+                        } else if (status.toLowerCase().includes('out of stock')) {
+                            statusSpan.classList.add('out-of-stock');
+                        }
                         
-                        ${product.stock_status.length ? `
-                        <div class="stock-status ${product.stock_status[0].includes('Out') ? 'out-of-stock' : ''}">
-                            <i class="fas fa-${product.stock_status[0].includes('Out') ? 'times' : 'check'}-circle"></i> 
-                            ${product.stock_status[0]}
-                        </div>` : ''}
-                        
-                        ${product.badges.length ? `
-                        <div class="product-meta">
-                            ${product.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
-                        </div>` : ''}
-                        
-                        ${product.sales_points.length ? `
-                        <div class="features">
-                            <ul>
-                                ${product.sales_points.map(point => `<li>${point}</li>`).join('')}
-                            </ul>
-                        </div>` : ''}
-                        
-                        ${product.product_url ? `
-                        <div class="product-url">
-                            <a href="${product.product_url}" target="_blank"><i class="fas fa-external-link-alt"></i> View Product Details</a>
-                        </div>` : ''}
-                    </div>
-                </div>
-                `;
+                        stockCell.appendChild(statusSpan);
+                        stockCell.appendChild(document.createElement('br'));
+                    });
+                } else {
+                    stockCell.textContent = 'Stock status unknown';
+                }
+                
+                // Append all cells to the row
+                row.appendChild(imgCell);
+                row.appendChild(nameCell);
+                row.appendChild(salesCell);
+                row.appendChild(badgesCell);
+                row.appendChild(priceCell);
+                row.appendChild(moneySavedCell);
+                row.appendChild(stockCell);
+                
+                productsBody.appendChild(row);
+            });
+        }
+        
+        // Function to sort products
+        function sortProducts(sortKey) {
+            // Reset active class on all buttons
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
             
-            resultsContainer.innerHTML = html;
-            resultsCount.textContent = `${allProducts.length} products found`;
-            updatePaginationControls();
-        }
-        
-        function updatePaginationControls() {
-            const totalPages = Math.ceil(allProducts.length / productsPerPage);
-            
-            currentPageElements.forEach(el => {
-                el.textContent = `Page ${currentPage} of ${totalPages}`;
-            });
-            
-            prevPageBtn.disabled = currentPage === 1;
-            nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
-            prevPageBtnBottom.disabled = currentPage === 1;
-            nextPageBtnBottom.disabled = currentPage === totalPages || totalPages === 0;
-        }
-        
-        function updateStatistics() {
-            totalProductsEl.textContent = allProducts.length;
-            
-            const totalSavings = allProducts.reduce((sum, product) => sum + product.savings, 0);
-            totalSavingsEl.textContent = `$${totalSavings.toFixed(2)}`;
-            
-            const avgSavings = allProducts.length > 0 ? totalSavings / allProducts.length : 0;
-            avgSavingsEl.textContent = `$${avgSavings.toFixed(2)}`;
-            
-            scrapedPagesEl.textContent = scrapedPages;
-        }
-        
-        function createPriceChart() {
-            if (priceChart) {
-                priceChart.destroy();
+            // Set active class on current button
+            const activeButton = document.querySelector(`.sort-btn[data-sort="${sortKey}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
             }
             
-            if (allProducts.length === 0) return;
+            // Handle special cases for descending sort
+            let actualSortKey = sortKey;
+            if (sortKey.endsWith('_desc')) {
+                actualSortKey = sortKey.replace('_desc', '');
+                sortDirection = -1;
+            } else {
+                // Toggle direction if sorting same column
+                sortDirection = currentSort === sortKey ? sortDirection * -1 : 1;
+            }
             
-            // Get top 10 products by price
-            const sortedProducts = [...allProducts]
-                .sort((a, b) => {
-                    const aPrice = parseFloat(a.sale_price.replace(/[^\d.]/g, '')) || 0;
-                    const bPrice = parseFloat(b.sale_price.replace(/[^\d.]/g, '')) || 0;
-                    return bPrice - aPrice;
-                })
-                .slice(0, 10);
+            currentSort = sortKey;
             
-            const labels = sortedProducts.map(p => p.name.length > 20 ? p.name.substring(0, 20) + '...' : p.name);
-            const prices = sortedProducts.map(p => {
-                return parseFloat(p.sale_price.replace(/[^\d.]/g, '')) || 0;
+            allProducts.sort((a, b) => {
+                // Handle numeric fields
+                if (actualSortKey.includes('price_num') || actualSortKey === 'money_saved') {
+                    const valA = a[actualSortKey] || 0;
+                    const valB = b[actualSortKey] || 0;
+                    return (valA - valB) * sortDirection;
+                }
+                
+                // Handle string fields
+                const valA = (a[actualSortKey] || '').toString().toLowerCase();
+                const valB = (b[actualSortKey] || '').toString().toLowerCase();
+                
+                if (valA < valB) return -1 * sortDirection;
+                if (valA > valB) return 1 * sortDirection;
+                return 0;
             });
-            const savings = sortedProducts.map(p => p.savings);
             
-            const ctx = priceChartCanvas.getContext('2d');
-            priceChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Price',
-                            data: prices,
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Savings',
-                            data: savings,
-                            backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Price & Savings ($)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Products'
-                            }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Top 10 Products by Price',
-                            font: {
-                                size: 18
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
-                                }
-                            }
+            renderProducts();
+        }
+        
+        // Function to update statistics
+        function updateStats() {
+            totalProductsEl.textContent = allProducts.length;
+            uniqueProductsEl.textContent = seenProducts.size;
+            
+            // Calculate total savings
+            const totalSavings = allProducts.reduce((sum, product) => {
+                return sum + (product.money_saved || 0);
+            }, 0);
+            
+            totalSavingsEl.textContent = `$${totalSavings.toFixed(2)}`;
+        }
+        
+        // Function to show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Function to simulate scraping (since we can't actually scrape in this environment)
+        async function startScraping() {
+            const url = urlInput.value.trim();
+            if (!url) {
+                showError('Please enter a URL');
+                return;
+            }
+            
+            // Reset state
+            allProducts = [];
+            seenProducts.clear();
+            pagesProcessedEl.textContent = '0';
+            updateStats();
+            progressContainer.style.display = 'block';
+            scrapeButton.disabled = true;
+            errorMessage.style.display = 'none';
+            
+            // Show initial progress
+            progressStatus.textContent = 'Starting scraping process...';
+            progressFill.style.width = '0%';
+            
+            // For demo purposes, we'll simulate scraping with mock data
+            // In a real implementation, you would fetch the actual URLs
+            
+            try {
+                const baseUrl = removePagenumberParam(url);
+                let page = 1;
+                let duplicateCount = 0;
+                
+                while (page <= maxPages) {
+                    // Update progress
+                    const progressPercent = Math.min(100, (page / maxPages) * 100);
+                    progressFill.style.width = `${progressPercent}%`;
+                    pageStatus.textContent = `Page ${page} of ${maxPages}`;
+                    progressStatus.textContent = `Scraping page ${page}...`;
+                    
+                    // Simulate network delay
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // Generate mock products (in a real app, you would fetch the actual page)
+                    const mockProducts = generateMockProducts(page);
+                    
+                    // Process products
+                    let newProducts = 0;
+                    let duplicates = 0;
+                    
+                    for (const product of mockProducts) {
+                        const identifier = product.product_url || product.name;
+                        if (identifier && !seenProducts.has(identifier)) {
+                            seenProducts.add(identifier);
+                            allProducts.push(product);
+                            newProducts++;
+                        } else {
+                            duplicates++;
                         }
                     }
+                    
+                    // Update stats
+                    pagesProcessedEl.textContent = page;
+                    updateStats();
+                    
+                    // Break conditions
+                    if (mockProducts.length === 0) {
+                        progressStatus.textContent = `No products found on page ${page}. Stopping.`;
+                        break;
+                    }
+                    
+                    if (duplicates > 0 && duplicates === mockProducts.length) {
+                        progressStatus.textContent = `Page ${page} contains only duplicates. Stopping.`;
+                        break;
+                    }
+                    
+                    if (newProducts === 0) {
+                        progressStatus.textContent = `No new products on page ${page}. Stopping.`;
+                        break;
+                    }
+                    
+                    page++;
+                    
+                    // Break if we reached max pages
+                    if (page > maxPages) {
+                        progressStatus.textContent = 'Reached maximum page limit. Stopping.';
+                        break;
+                    }
                 }
-            });
+                
+                // Complete progress
+                progressFill.style.width = '100%';
+                progressStatus.textContent = 'Scraping complete!';
+                
+                // Show controls
+                controls.style.display = 'flex';
+                
+                // Sort and render products
+                sortProducts('name');
+                renderProducts();
+                
+            } catch (error) {
+                console.error('Scraping error:', error);
+                showError(`Error during scraping: ${error.message}`);
+                progressStatus.textContent = 'Scraping failed';
+            } finally {
+                scrapeButton.disabled = false;
+            }
         }
         
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
+        // Function to generate mock product data for demonstration
+        function generateMockProducts(page) {
+            const brands = ['Dell', 'HP', 'Lenovo', 'Apple', 'Asus', 'Acer', 'Microsoft'];
+            const processors = ['Intel Core i5', 'Intel Core i7', 'AMD Ryzen 5', 'AMD Ryzen 7', 'Apple M1', 'Apple M2'];
+            const rams = ['8GB', '16GB', '32GB'];
+            const storages = ['256GB SSD', '512GB SSD', '1TB SSD', '2TB SSD'];
+            const gpus = ['Integrated', 'NVIDIA MX450', 'NVIDIA RTX 3050', 'NVIDIA RTX 4060', 'AMD Radeon'];
+            const badges = ['Best Seller', 'Limited Deal', 'New Arrival', 'Staff Pick', 'Clearance'];
+            const statuses = ['In Stock', 'Low Stock', 'Out of Stock', 'Pre-order'];
             
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
+            const products = [];
+            const count = Math.floor(Math.random() * 6) + 5; // 5-10 products per page
+            
+            for (let i = 1; i <= count; i++) {
+                const brand = brands[Math.floor(Math.random() * brands.length)];
+                const processor = processors[Math.floor(Math.random() * processors.length)];
+                const ram = rams[Math.floor(Math.random() * rams.length)];
+                const storage = storages[Math.floor(Math.random() * storages.length)];
+                const gpu = gpus[Math.floor(Math.random() * gpus.length)];
+                
+                const wasPrice = 500 + Math.random() * 1500;
+                const discount = Math.random() * 0.4; // Up to 40% discount
+                const salePrice = wasPrice * (1 - discount);
+                const savings = wasPrice - salePrice;
+                
+                const product = {
+                    'name': `${brand} Laptop ${page}-${i} - ${processor}, ${ram} RAM, ${storage}`,
+                    'sales_points': [
+                        `${processor} processor`,
+                        `${ram} memory`,
+                        `${storage} storage`,
+                        gpu === 'Integrated' ? 'Integrated graphics' : `Dedicated ${gpu} graphics`,
+                        'Backlit keyboard',
+                        'High-resolution display'
+                    ],
+                    'badges': badges.slice(0, Math.floor(Math.random() * 3)),
+                    'sale_price': `$${salePrice.toFixed(2)}`,
+                    'was_price': `$${wasPrice.toFixed(2)}`,
+                    'stock_status': [statuses[Math.floor(Math.random() * statuses.length)]],
+                    'image_url': `https://picsum.photos/200/150?random=${page}${i}`,
+                    'product_url': `https://example.com/product/${page}-${i}`,
+                    'sale_price_num': salePrice,
+                    'was_price_num': wasPrice,
+                    'money_saved': savings
+                };
+                
+                products.push(product);
+            }
+            
+            return products;
         }
-        
-        // Initialize the scraper
-        init();
     </script>
 </body>
 </html>
